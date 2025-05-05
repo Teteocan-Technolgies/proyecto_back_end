@@ -1,6 +1,6 @@
 from flask import Flask
 from .config import Config
-from .extensions import db, Migrate
+from .extensions import db, migrate
 from .routers import api
 
 def create_app():
@@ -8,7 +8,7 @@ def create_app():
     app.config.from_object(Config)
 
     db.init_app(app)
-    Migrate.init_app(app, db)
+    migrate.init_app(app, db)
 
     app.register_blueprint(api)
     return app
