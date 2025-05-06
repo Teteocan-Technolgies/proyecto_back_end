@@ -4,8 +4,16 @@ from app.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
+def get_all_users() :
+    # Obtener todos los usuarios de la base de datos
+    usuarios = Usuario.query.all()
+    # Convertir los usuarios a un formato JSON
+    usuarios_json = [usuario.to_dict() for usuario in usuarios]
+    # Devolver la lista de usuarios en formato JSON
+    return jsonify(usuarios_json)
+
 def get_data_usuario(data):
-    data_usuario = Usuario.query.filter_by(Usuario.usuario_id == data['usuario_id']).first()
+    data_usuario = Usuario.query.filter_by(usuario_id=data['usuario_id']).first()
     return {
         "nombre": data_usuario.nombre,
         "apellido": data_usuario.apellido,
@@ -24,7 +32,7 @@ def registrar_usuario(data):
     
 
     #Crear un nuevo usuario
-    hashed_password = generate_password_hash(data['password'], method='sha256')
+    hashed_password = generate_password_hash(data['password'], method='pbkdf2:sha256', salt_length=8)
 
     nuevo_usuario = Usuario(
         nombre = data['nombre'],
@@ -36,10 +44,16 @@ def registrar_usuario(data):
     db.session.add(nuevo_usuario)
     db.session.commit()
 
+    
     return {
         "mensaje": "Usuario registrado con éxito",
-        "usuario":nuevo_usuario
-    }
+        "usuario": {
+            "nombre": nuevo_usuario.nombre,
+            "apellido": nuevo_usuario.apellido,
+            "email": nuevo_usuario.email,
+            "usuario_id": nuevo_usuario.usuario_id
+        }
+    }, 201
 
 def login_usuario(data):
     usuario = Usuario.query.filter_by(email=data['email']).first()
