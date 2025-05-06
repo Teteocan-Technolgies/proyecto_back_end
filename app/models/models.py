@@ -1,4 +1,5 @@
-from .extensions import db
+'''
+from ..extensions import db
 
 class Usuario(db.Model):
     __tablename__ = 'usuarios'
@@ -50,3 +51,5 @@ class DetalleVenta(db.Model):
     cantidad = db.Column(db.Integer, nullable=False)
     precio = db.Column(db.Float, nullable=False)
     total = db.Column(db.Float, nullable=False)
+
+'''

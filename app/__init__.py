@@ -1,7 +1,7 @@
 from flask import Flask
 from .config import Config
 from .extensions import db, migrate
-from .routers import api
+from .routes.routers import api
 
 def create_app():
     app = Flask(__name__)
