@@ -11,5 +11,6 @@ def login_user():
 
 @api.route('/registrar', methods=['POST'])
 def register_user():
-    resultado, status_code = usuario_controller.registrar_usuario(request.get_json())
+    data = request.get_json()
+    resultado, status_code = usuario_controller.registrar_usuario(data)
     return jsonify(resultado), status_code

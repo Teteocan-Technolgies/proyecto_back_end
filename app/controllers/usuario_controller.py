@@ -31,6 +31,7 @@ def registrar_usuario(data):
         }, 400
     
 
+    print("usuario_existente:", usuario_existente)
     #Crear un nuevo usuario
     hashed_password = generate_password_hash(data['password'], method='pbkdf2:sha256', salt_length=8)
 
