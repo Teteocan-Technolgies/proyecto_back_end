@@ -21,7 +21,6 @@ def get_data_usuario(data):
         "usuario_id": data_usuario.usuario_id,
     }
 
-
 def registrar_usuario(data):
     #Verificar si el usuario ya existe en la base de datos
     usuario_existente = Usuario.query.filter_by(email=data['email']).first()
@@ -57,8 +56,12 @@ def registrar_usuario(data):
     }, 201
 
 def login_usuario(data):
+    print("Entramos")
     usuario = Usuario.query.filter_by(email=data['email']).first()
+    print("usuario")
+    print(usuario)
     if usuario and check_password_hash(usuario.password, data['password']):
+        print("Todo en orden")
         return {
             "mensaje": "Inicio de sesión exitoso",
             "usuario_id": usuario.usuario_id,

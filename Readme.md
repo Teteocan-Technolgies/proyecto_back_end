@@ -32,3 +32,14 @@ Para ejecutar el proyecto se debe ejecutar el siguiente comando en la consola:
 ```
 flask run
 ```
+
+
+Ejemplo de env
+```
+DB_USER=root
+DB_PASSWORD=root
+DB_HOST=localhost
+DB_NAME=STOREDB
+DB_PORT=3306
+DB_DRIVER=mysql
+```
