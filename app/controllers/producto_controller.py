@@ -38,7 +38,7 @@ def get_producto_by_id(id):
             }
         }
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return {"error": str(e)}, 500  
     
 # Crear un nuevo producto
 def create_producto(data):
@@ -62,7 +62,7 @@ def create_producto(data):
             }
         }, 201
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return {"error": str(e)}, 500  
     
 # Actualizar un producto por su ID
 def update_producto(id, data):
@@ -88,7 +88,7 @@ def update_producto(id, data):
                 }
             }, 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return {"error": str(e)}, 500  
 
 # Eliminar un producto por su ID
 def delete_producto(id):
@@ -103,4 +103,4 @@ def delete_producto(id):
                 "message": "Producto dado de baja"
             }, 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return {"error": str(e)}, 500  
