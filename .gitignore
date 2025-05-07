@@ -1,0 +1,13 @@
+# Ignorar archivos de caché de Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Ignorar otros archivos temporales de Python
+*.egg-info/
+*.egg
+*.dist-info/
+*.tox/
+*.venv/
+.env
