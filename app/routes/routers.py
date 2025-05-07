@@ -36,3 +36,8 @@ def update_producto(producto_id):
     data = request.get_json()
     producto, status_code = producto_controller.update_producto(producto_id, data)
     return jsonify(producto), status_code
+
+@api.route('/productos/<int:producto_id>', methods=['DELETE'])
+def delete_producto(producto_id):
+    producto, status_code = producto_controller.delete_producto(producto_id)
+    return jsonify(producto), status_code

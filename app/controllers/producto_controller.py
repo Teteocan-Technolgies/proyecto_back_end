@@ -8,7 +8,17 @@ def get_all_productos():
     try:
         productos = Productos.query.filter(Productos.baja == False).all()
         return {
-            productos
+            "productos": [
+                {
+                    "producto_id": producto.producto_id,
+                    "nombre": producto.nombre,
+                    "descripcion": producto.descripcion,
+                    "precio": producto.precio,
+                    "stock": producto.stok,
+                    "baja": producto.baja,
+                }
+                for producto in productos
+            ]
         }, 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -19,6 +29,7 @@ def get_producto_by_id(id):
         producto = Productos.query.get(id)
         return {
             "producto" : {
+                "prodicto_id" : producto.producto_id,
                 "nombre": producto.nombre,
                 "descripcion": producto.descripcion,
                 "precio": producto.precio,
@@ -60,6 +71,11 @@ def update_producto(id, data):
         if not producto:
             return jsonify({'error': 'Producto no encontrado'}), 404
         else:
+            producto.nombre = data['nombre']
+            producto.descripcion = data['descripcion']
+            producto.precio = data['precio']
+            producto.stock = data['stock']
+            
             db.session.add(producto)
             db.session.commit()
             return {
@@ -75,4 +91,16 @@ def update_producto(id, data):
         return jsonify({'error': str(e)}), 500
 
 # Eliminar un producto por su ID
-
+def delete_producto(id):
+    try:
+        producto = Productos.query.get(id)
+        if not producto:
+            return jsonify({'error': 'Producto no encontrado'}), 404
+        else:
+            db.session.delete(producto)
+            db.session.commit()
+            return {
+                "message": "Producto dado de baja"
+            }, 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
