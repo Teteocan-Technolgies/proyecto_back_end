@@ -14,14 +14,14 @@ def get_all_productos():
                     "nombre": producto.nombre,
                     "descripcion": producto.descripcion,
                     "precio": producto.precio,
-                    "stock": producto.stok,
+                    "stock": producto.stock,
                     "baja": producto.baja,
                 }
                 for producto in productos
             ]
         }, 201
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return {"error": str(e)}, 500  
 
 #Retornar un producto por su ID
 def get_producto_by_id(id):
