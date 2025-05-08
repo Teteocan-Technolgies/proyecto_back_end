@@ -15,6 +15,16 @@ def register_user():
     resultado, status_code = usuario_controller.registrar_usuario(data)
     return jsonify(resultado), status_code
 
+@api.route('/usuarios', methods=['GET'])
+def get_all_data():
+    usuarios, status_code = usuario_controller.get_all_users()
+    return jsonify(usuarios), status_code
+
+@api.route('/user/data/<int:usuario_id>', methods=['POST'])
+def get_data_usuario(usuario_id):
+    usuario, status_code = usuario_controller.get_data_usuario(usuario_id)
+    return jsonify(usuario), status_code
+
 @api.route('/productos', methods=['GET'])
 def get_all_productos():
     productos, status_code = producto_controller.get_all_productos()

@@ -6,19 +6,28 @@ from werkzeug.security import generate_password_hash, check_password_hash
 def get_all_users() :
     # Obtener todos los usuarios de la base de datos
     usuarios = Usuario.query.all()
-    # Convertir los usuarios a un formato JSON
-    usuarios_json = [usuario.to_dict() for usuario in usuarios]
-    # Devolver la lista de usuarios en formato JSON
-    return usuarios_json
+    list_usuario = [{
+        "usuario_id" : usuario.usuario_id,
+        "nombre" : usuario.nombre,
+        "apellido" : usuario.apellido,
+        "email" : usuario.email,
+        "baja" : usuario.baja
+    } for usuario in usuarios]
+    return list_usuario, 200
 
 def get_data_usuario(data):
     data_usuario = Usuario.query.filter_by(usuario_id=data['usuario_id']).first()
+
+    if not data_usuario:
+        return {
+            "message" : "Usuario no encontrado"
+        }, 500
     return {
         "nombre": data_usuario.nombre,
         "apellido": data_usuario.apellido,
         "email": data_usuario.email,
         "usuario_id": data_usuario.usuario_id,
-    }
+    }, 200
 
 def registrar_usuario(data):
     #Verificar si el usuario ya existe en la base de datos
