@@ -13,7 +13,7 @@ def get_all_users() :
         "email" : usuario.email,
         "baja" : usuario.baja
     } for usuario in usuarios]
-    return list_usuario, 200
+    return {'success': True, 'data':list_usuario}, 200
 
 def get_data_usuario(data):
     data_usuario = Usuario.query.filter_by(usuario_id=data['usuario_id']).first()
