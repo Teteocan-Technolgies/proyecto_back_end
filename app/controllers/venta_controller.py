@@ -14,7 +14,7 @@ def get_all_ventas():
             "total": float(v.total),
             "cantidad_art": v.cantidad_art
         } for v in ventas]
-        return ventas_data, 200  # (data, status)
+        return {'success': True,'data': ventas_data}, 200  # (data, status)
     except Exception as e:
         return {"error": str(e)}, 500
     
@@ -58,7 +58,6 @@ def get_ventas_by_cliente_id(usuario_id):
 def create_venta(venta_data):
     try:
         venta = Ventas(
-            venta_id = venta_data["venta_id"],
             usuario_id = venta_data["usuario_id"],
             cantidad_art = venta_data["cantidad_art"],
             total = venta_data["total"],
@@ -68,6 +67,7 @@ def create_venta(venta_data):
         db.session.commit()
         return {
             "message": "Venta creada con éxito",
+            "success": True,
             "venta" : {
                 "venta_id": venta.venta_id,
                 "usuario_id": venta.usuario_id,
@@ -94,6 +94,7 @@ def update_venta(venta_id, venta_data):
         db.session.commit()
         return {
             "message": "Venta actualizada con éxito",
+            "success": True,
             "venta": {
                 "venta_id": venta.venta_id,
                 "usuario_id": venta.usuario_id,
@@ -114,7 +115,7 @@ def delete_venta(venta_id):
         
         db.session.delete(venta)
         db.session.commit()
-        return {"message": "Venta eliminada con éxito"}, 200
+        return {"message": "Venta eliminada con éxito", "success": True}, 200
     except Exception as e:
         return {"error": str(e)}, 500
     
