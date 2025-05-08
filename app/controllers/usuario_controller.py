@@ -1,5 +1,4 @@
 from app.models import Usuario
-from flask import Blueprint, jsonify
 from app.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -10,7 +9,7 @@ def get_all_users() :
     # Convertir los usuarios a un formato JSON
     usuarios_json = [usuario.to_dict() for usuario in usuarios]
     # Devolver la lista de usuarios en formato JSON
-    return jsonify(usuarios_json)
+    return usuarios_json
 
 def get_data_usuario(data):
     data_usuario = Usuario.query.filter_by(usuario_id=data['usuario_id']).first()

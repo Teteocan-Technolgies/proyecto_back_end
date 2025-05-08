@@ -1,5 +1,4 @@
 from app.models import Productos
-from flask import Blueprint, jsonify
 from app.extensions import db
 
 
@@ -69,7 +68,7 @@ def update_producto(id, data):
     try:
         producto = Productos.query.get(id)
         if not producto:
-            return jsonify({'error': 'Producto no encontrado'}), 404
+            return {'error': 'Producto no encontrado'}, 404
         else:
             producto.nombre = data['nombre']
             producto.descripcion = data['descripcion']
@@ -95,7 +94,7 @@ def delete_producto(id):
     try:
         producto = Productos.query.get(id)
         if not producto:
-            return jsonify({'error': 'Producto no encontrado'}), 404
+            return {'error': 'Producto no encontrado'}, 404
         else:
             db.session.delete(producto)
             db.session.commit()
