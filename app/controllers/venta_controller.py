@@ -22,17 +22,45 @@ def get_all_ventas():
 # Retornar una venta por su ID
 def get_venta_by_id(venta_id):
     try:
-        venta = Ventas.query.get(venta_id)
+
+        #Consulta ordenada por fecha
+        venta = Ventas.query.order_by(Ventas.fecha.desc()).get(venta_id)
         if not venta:  # Manejar caso cuando la venta no existe
             return {"error": "Venta no encontrada"}, 404
         
-        return {
+
+        detalles_venta = [{
+            "detalle_venta_id" : detalle.detalle_venta_id,
+            "cantidad" : detalle.cantidad,
+            "precio" : detalle.precio,
+            "total" : detalle.total,
+            "producto" : 
+                {
+                    "producto_id" : detalle.producto.producto_id,
+                    "nombre" : detalle.producto.nombre,
+                    "descripcion" : detalle.producto.descripcion,
+                    "precio" : detalle.producto.precio,
+                    "stock" : detalle.producto.stock,
+                    "baja" : detalle.producto.baja
+                }
+            
+        } for detalle in venta.detalle_ventas]
+
+        venta_detalles_productos_usuario = {
             "venta_id": venta.venta_id,
-            "usuario_id": venta.usuario_id,
+            "detalle_usuario" : {
+                "usuario_id" : venta.usuario.usuario_id,
+                "nombre" : venta.usuario.nombre,
+                "apellido" : venta.usuario.apellido,
+                "email" : venta.usuario.email,
+                "baja" : venta.usuario.baja
+            },
             "fecha": venta.fecha.isoformat() if venta.fecha else None,
             "total": float(venta.total),
-            "cantidad_art": venta.cantidad_art
-        }, 200  # Ahora retorna (data, status) siempre
+            "cantidad_art": venta.cantidad_art,
+            "detalles_venta" : detalles_venta
+        }
+        return venta_detalles_productos_usuario , 200  # Ahora retorna (data, status) siempre
     except Exception as e:
         return {"error": str(e)}, 500
 

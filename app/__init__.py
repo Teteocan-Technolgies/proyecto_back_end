@@ -7,6 +7,8 @@ def create_app():
     app = Flask(__name__)
     CORS(app)
     app.config.from_object(Config)
+    # Desactiva el ordenamiento alfabético
+    app.config['JSON_SORT_KEYS'] = False 
 
     db.init_app(app)
     migrate.init_app(app, db)
