@@ -94,5 +94,5 @@ def get_all_stadistics():
 @api.route('/chatbot', methods=['POST'])
 def procesar_consulta_chatbot():
     data = request.get_json()
-    respuesta = chat_bot_controller.procesar_consulta_chatbot(data)
+    respuesta = chat_bot_controller.chat_bot(data)
     return jsonify(respuesta), 200

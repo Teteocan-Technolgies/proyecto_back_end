@@ -1,117 +1,68 @@
 from dotenv import load_dotenv
 from google import genai
+import os
 from flask import Flask, request, jsonify
 from google.genai import types
+from ..controllers.venta_controller import get_estadisticas_ventas  # ✅ Nombre original del controlador
 
-
-
-#Necesito datos de la base de datos para que el bot pueda responder a las preguntas del usuario
 load_dotenv()
+api_key = 'AIzaSyCRcJxhvCHlho2GHmmQcKSpo9UInH1Q3A0'
 
-respuesta_usario = "Quiero un analisis descriptivo de las ventas, de forma sencilla de entender"    #Agregen los datos de las tablos 
+# Función para obtener datos dinámicos de ventas
+def obtener_datos_ventas(data):
+    try:
+        # Obtener estadísticas desde el controlador SIN MODIFICAR NOMBRES
+        response, status = get_estadisticas_ventas()  # ✅ Función original
+        if status != 200:
+            raise Exception("Error al obtener estadísticas")
 
+        # Procesar datos respetando claves originales
+        productos_mas_vendidos = {}
+        productos_menos_vendidos = {}
+        ventas_totales_mensuales = {}
+        totales_anuales = {}
 
-api_key = 'AIzaSyCRcJxhvCHlho2GHmmQcKSpo9UInH1Q3A0' # inicio de api key de geminis
+        # Mapeo de meses (para mantener compatibilidad con datos estáticos previos)
+        nombres_meses = {
+            1: 'Enero', 2: 'Febrero', 3: 'Marzo', 4: 'Abril',
+            5: 'Mayo', 6: 'Junio', 7: 'Julio', 8: 'Agosto',
+            9: 'Septiembre', 10: 'Octubre', 11: 'Noviembre', 12: 'Diciembre'
+        }
 
-#cambiar por los datos de la base
-# Datos de los productos más vendidos
+        # Acumular datos anuales y mensuales
+        for mes_data in response:
+            # Extraer datos con claves originales del controlador ✅
+            ventas_mes = mes_data['ventas_totales_mes']  # Clave original
+            mes_num = int(ventas_mes['mes'].split('-')[1])
+            nombre_mes = nombres_meses[mes_num]
+            
+            # Ventas mensuales
+            ventas_totales_mensuales[nombre_mes] = ventas_mes['total_ventas']  # Clave original
+            
+            # Productos más vendidos (acumulación anual)
+            for producto in mes_data['productos_mas_vendidos']:  # Clave original
+                nombre = producto['nombre']  # Clave original
+                totales_anuales[nombre] = totales_anuales.get(nombre, 0) + producto['total_vendidos']  # Clave original
 
+        # Ordenar productos
+        sorted_productos = sorted(totales_anuales.items(), key=lambda x: x[1], reverse=True)
+        productos_mas_vendidos = dict(sorted_productos[:5])
+        productos_menos_vendidos = dict(sorted_productos[-5:]) if len(sorted_productos) >=5 else {}
 
+        return {
+            'productos_mas_vendidos': productos_mas_vendidos,
+            'productos_menos_vendidos': productos_menos_vendidos,
+            'ventas_totales_mensuales': ventas_totales_mensuales
+        }
 
-#datos = [["vendidos"] #maximo 5 productos ] mas y menos
-
-
-
-
-productos_mas_vendidos = { #ingresar datos de la base
-    'Producto A': 1500,
-    'Producto B': 1200,
-    'Producto C': 1000,
-    'Producto D': 850,
-    'Producto E': 700
-}
-
-# Datos de los productos menos vendidos
-productos_menos_vendidos = {
-    'Producto V': 120,
-    'Producto W': 105,
-    'Producto X': 90,
-    'Producto Y': 75,
-    'Producto Z': 50
-}
-
-# Datos generales de ventas por trimestre y producto
-datos_ventas = {
-    'Q1': {
-        'Producto A': 350, 'Producto B': 280, 'Producto C': 230, 
-        'Producto D': 190, 'Producto E': 160, 'Producto V': 30,
-        'Producto W': 25, 'Producto X': 20, 'Producto Y': 18, 'Producto Z': 12
-    },
-    'Q2': {
-        'Producto A': 380, 'Producto B': 310, 'Producto C': 250, 
-        'Producto D': 210, 'Producto E': 170, 'Producto V': 32,
-        'Producto W': 28, 'Producto X': 22, 'Producto Y': 19, 'Producto Z': 13
-    },
-    'Q3': {
-        'Producto A': 420, 'Producto B': 330, 'Producto C': 270, 
-        'Producto D': 230, 'Producto E': 190, 'Producto V': 29,
-        'Producto W': 27, 'Producto X': 24, 'Producto Y': 20, 'Producto Z': 12
-    },
-    'Q4': {
-        'Producto A': 350, 'Producto B': 280, 'Producto C': 250, 
-        'Producto D': 220, 'Producto E': 180, 'Producto V': 29,
-        'Producto W': 25, 'Producto X': 24, 'Producto Y': 18, 'Producto Z': 13
-    }
-}
-
-# Ventas totales anuales para los últimos 5 años
-ventas_totales_anuales = {
-    '2019': 3800000,
-    '2020': 3200000,
-    '2021': 4100000,
-    '2022': 4500000,
-    '2023': 4800000
-}
-
-# Ventas totales mensuales del año actual
-ventas_totales_mensuales = {
-    'Enero': 380000,
-    'Febrero': 360000,
-    'Marzo': 420000,
-    'Abril': 390000,
-    'Mayo': 410000,
-    'Junio': 450000,
-    'Julio': 470000,
-    'Agosto': 490000,
-    'Septiembre': 460000,
-    'Octubre': 430000,
-    'Noviembre': 510000,
-    'Diciembre': 530000
-}
-
-# Ventas totales por categoría
-ventas_total_G = { #total de ventas y total en $
-    'Electrónica': 2100000,
-    'Hogar': 1500000,
-    'Deportes': 900000,
-    'Juguetes': 750000,
-    'Ropa': 650000
-}
-
-
-datos_generales = {
-    'productos_mas_vendidos': productos_mas_vendidos,
-    'datos_ventas': datos_ventas,
-    'productos_menos_vendidos': productos_menos_vendidos,
-    "Ventas Totales anuales": ventas_totales_anuales,
-    "Ventas Totales mensuales": ventas_totales_mensuales,
-    "ventas total G" : ventas_total_G 
-}
+    except Exception as e:
+        print(f"Error en obtener_datos_ventas: {e}")
+        return {}
 
 
 
 #iniciado del bot
-def chat_bot(datos_generales=datos_generales, respuesta_usario=respuesta_usario):
+def chat_bot(data):
     try:
         # Crear cliente con la API key
         cliente = genai.Client(api_key=api_key)
@@ -155,10 +106,10 @@ def chat_bot(datos_generales=datos_generales, respuesta_usario=respuesta_usario)
             Si no dispones de suficientes datos para responder con precisión, indica qué información adicional
             sería necesaria para un análisis más completo.
             
-            -Datos empresariales: {datos_generales}
+            -Datos empresariales: {get_estadisticas_ventas}
             -Utiliza exclusivamente estos datos como base para tus análisis y conclusiones.
 
-            Consulta del usuario: "{respuesta_usario}"
+            Consulta del usuario: "{data["consulta"]}"
             
             -optimaza la resputa para que sea entendible para el usuario, no utilices tecnisismos ni palabras complicadas.
             -Recuerda que la respusta debe ser sencilla y corta para que el usuario pueda entenderla sin problemas.
@@ -177,7 +128,7 @@ def chat_bot(datos_generales=datos_generales, respuesta_usario=respuesta_usario)
         return "No se pudo generar."
 
 
-print(chat_bot())
+#print(chat_bot())
 
 
 
