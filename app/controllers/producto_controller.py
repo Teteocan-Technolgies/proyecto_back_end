@@ -92,7 +92,7 @@ def update_producto(id, data):
 # Eliminar un producto por su ID
 def delete_producto(id):
     try:
-        producto = Productos.query.get(id)
+        producto = Productos.query.get(id)        
         if not producto:
             return {'error': 'Producto no encontrado'}, 404
         else:
@@ -102,4 +102,5 @@ def delete_producto(id):
                 "message": "Producto dado de baja"
             }, 200
     except Exception as e:
-        return {"error": str(e)}, 500  
+        db.session.rollback()  # En caso de error, revertir cualquier cambio
+        return {"error": "Error interno del servidor. Detalles: " + str(e)}, 500 
