@@ -5,6 +5,7 @@ __pycache__/
 *.pyd
 
 # Ignorar otros archivos temporales de Python
+venv/
 *.egg-info/
 *.egg
 *.dist-info/
