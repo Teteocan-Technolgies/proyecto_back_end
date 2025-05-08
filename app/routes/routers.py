@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from ..controllers import usuario_controller, producto_controller, venta_controller
+from ..controllers import usuario_controller, producto_controller, venta_controller, chat_bot_controller
 
 api = Blueprint('api', __name__)
 
@@ -79,3 +79,10 @@ def delete_venta(venta_id):
 def get_all_stadistics():
     ventas, status_code = venta_controller.get_estadisticas_ventas()
     return jsonify(ventas), status_code
+
+
+@api.route('/chatbot', methods=['POST'])
+def procesar_consulta_chatbot():
+    data = request.get_json()
+    respuesta = chat_bot_controller.procesar_consulta_chatbot(data)
+    return jsonify(respuesta), 200
