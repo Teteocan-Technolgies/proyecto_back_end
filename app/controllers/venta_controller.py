@@ -92,6 +92,20 @@ def create_venta(venta_data):
             fecha = venta_data["fecha"],
         )
         db.session.add(venta)
+        db.session.flush()
+
+        detalles_creados = []
+        for producto in venta_data['producto']:
+            detalle = DetalleVenta(
+                venta_id = venta.venta_id,
+                producto_id = producto['producto_id'],
+                cantida = producto['cantidad'],
+                precio = producto['precio'],
+                total = producto['total']
+            )
+            db.session(detalle)
+            detalles_creados.append(detalle)
+
         db.session.commit()
         return {
             "message": "Venta creada con éxito",
@@ -101,9 +115,10 @@ def create_venta(venta_data):
                 "usuario_id": venta.usuario_id,
                 "fecha": venta.fecha.isoformat() if venta.fecha else None,
                 "total": float(venta.total),
-                "cantidad_art": venta.cantidad_art
+                "cantidad_art": venta.cantidad_art,
+                "productos" : detalles_creados
             }
-            }, 200
+        }, 200
     except Exception as e:
         return {"error": str(e)}, 500
 
