@@ -120,14 +120,12 @@ def chat_bot(data, datos_ventas):
             """,
             config=types.GenerateContentConfig(
             temperature=0.2,
-            top_k=40,
-            top_p=0.95,
             thinking_config=types.ThinkingConfig(thinking_budget=1500)
             )
         )
 
         
-        mensaje = respuesta [0].text       
+        mensaje = respuesta.text       
         return {'success':True, 'data': mensaje}
     except Exception as e:
         print(f"Error al generar mensaje: {e}")
