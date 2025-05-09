@@ -48,21 +48,22 @@ def obtener_datos_ventas(data):
         sorted_productos = sorted(totales_anuales.items(), key=lambda x: x[1], reverse=True)
         productos_mas_vendidos = dict(sorted_productos[:5])
         productos_menos_vendidos = dict(sorted_productos[-5:]) if len(sorted_productos) >=5 else {}
-
-        return {
+        
+        datos_totales_usario = {
             'productos_mas_vendidos': productos_mas_vendidos,
             'productos_menos_vendidos': productos_menos_vendidos,
-            'ventas_totales_mensuales': ventas_totales_mensuales
+            'ventas_totales_anuales': sum(totales_anuales.values()),  # Sumar totales anuales
+            'ventas_totales_mensuales': ventas_totales_mensuales,
         }
 
+        return datos_totales_usario
     except Exception as e:
         print(f"Error en obtener_datos_ventas: {e}")
         return {}
 
 
-
 #iniciado del bot
-def chat_bot(data):
+def chat_bot(data, datos_totales_usario):
     try:
         # Crear cliente con la API key
         cliente = genai.Client(api_key=api_key)
@@ -106,7 +107,8 @@ def chat_bot(data):
             Si no dispones de suficientes datos para responder con precisión, indica qué información adicional
             sería necesaria para un análisis más completo.
             
-            -Datos empresariales: {get_estadisticas_ventas}
+            
+            -Datos empresariales: {get_estadisticas_ventas} y {datos_totales_usario}
             -Utiliza exclusivamente estos datos como base para tus análisis y conclusiones.
 
             Consulta del usuario: "{data["consulta"]}"
