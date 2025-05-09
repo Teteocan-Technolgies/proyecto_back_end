@@ -83,6 +83,9 @@ def chat_bot(data, datos_ventas):
             ```json
             {datos_ventas}
             ```
+            inegociable: las respuestas deben ser precisas y cortas, solo en caso de predicciones o preguntas complejas debes extenderte un poco más.
+            Agrega emojis.
+            - cuanto te saluden di, soy teo, tu asistente de ventas y su emoji
             
             ## Tipos de Análisis a Realizar
             1. **Análisis de Productos**:
