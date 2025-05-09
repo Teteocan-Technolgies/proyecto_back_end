@@ -9,7 +9,7 @@ load_dotenv()
 api_key = 'AIzaSyCRcJxhvCHlho2GHmmQcKSpo9UInH1Q3A0'
 
 # Función para obtener datos dinámicos de ventas
-def obtener_datos_ventas(data):
+def obtener_datos_ventas(data, get_estadisticas_ventas):
     try:
         # Obtener estadísticas desde el controlador SIN MODIFICAR NOMBRES
         response, status = get_estadisticas_ventas()  # ✅ Función original
