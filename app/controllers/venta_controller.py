@@ -85,43 +85,63 @@ def get_ventas_by_cliente_id(usuario_id):
 # Crear una nueva venta
 def create_venta(venta_data):
     try:
+        # Validar que existan productos
+        if not venta_data.get("productos"):
+            return {"error": "La venta no tiene productos registrados", "success": False}, 400
+
+        # Crear la venta principal
         venta = Ventas(
-            usuario_id = venta_data["usuario_id"],
-            cantidad_art = venta_data["cantidad_art"],
-            total = venta_data["total"],
-            fecha = venta_data["fecha"],
+            usuario_id=venta_data["usuario_id"],
+            cantidad_art=venta_data["cantidad_art"],
+            total=venta_data["total"],
+            fecha=venta_data["fecha"]
         )
         db.session.add(venta)
-        db.session.flush() # Para obtener el ID de la venta antes del commit
+        db.session.flush()  # Para obtener el ID de la venta
 
-        if not venta['productos']:
-            return {"error": "La venta no tiene productos registrados"}, 404
-        
-        
-        for producto in venta['productos']:
-            producto = DetalleVenta(
-                venta_id = venta.venta_id,
-                producto_id = producto["producto_id"],
-                cantidad = producto["cantidad"],
-                precio = producto['precio'],
-                total = producto['total']
+        # Crear los detalles de venta
+        detalles_creados = []
+        for producto in venta_data["productos"]:
+            # Calcular el total del detalle (cantidad * precio)
+            total_detalle = producto["cantidad"] * producto["precio"]
+            
+            detalle = DetalleVenta(
+                venta_id=venta.venta_id,
+                producto_id=producto["producto_id"],
+                cantidad=producto["cantidad"],
+                precio=producto["precio"],
+                total=total_detalle
             )
-            db.session.add(producto)
+            db.session.add(detalle)
+            detalles_creados.append({
+                "producto_id": producto["producto_id"],
+                "nombre": producto["nombre"],
+                "cantidad": producto["cantidad"],
+                "precio": float(producto["precio"]),
+                "total": float(total_detalle)
+            })
 
         db.session.commit()
+
         return {
             "message": "Venta creada con éxito",
             "success": True,
-            "venta" : {
+            "venta": {
                 "venta_id": venta.venta_id,
                 "usuario_id": venta.usuario_id,
-                "fecha": venta.fecha.isoformat() if venta.fecha else None,
+                "fecha": venta.fecha.isoformat() if hasattr(venta.fecha, 'isoformat') else venta.fecha,
                 "total": float(venta.total),
                 "cantidad_art": venta.cantidad_art,
+                "detalles": detalles_creados
             }
-        }, 200
+        }, 201
+
+    except KeyError as e:
+        db.session.rollback()
+        return {"error": f"Campo faltante: {str(e)}", "success": False}, 400
     except Exception as e:
-        return {"error": str(e)}, 500
+        db.session.rollback()
+        return {"error": str(e), "success": False}, 500
 
 # Actualizar una venta por su ID
 def update_venta(venta_id, venta_data):
