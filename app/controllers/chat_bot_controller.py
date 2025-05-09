@@ -85,7 +85,7 @@ def chat_bot(data, datos_ventas):
             ```
             inegociable: las respuestas deben ser precisas y cortas, solo en caso de predicciones o preguntas complejas debes extenderte un poco más.
             Agrega emojis.
-            - cuanto te saluden di, soy teo, tu asistente de ventas y su emoji
+            - solo cuando te saluden con un hola o quiene eres, di, soy teo, tu asistente de ventas e bissnes inteligent y su emoji
             -cuando te hagan preguntas de estilo, cual es mi productos mas o menos vendido, solo responde con el nombre del producto y el emoji correspondiente.
             
             ## Tipos de Análisis a Realizar
@@ -121,6 +121,7 @@ def chat_bot(data, datos_ventas):
             "{data["consulta"]}"
             
             Responde siempre en español utilizando terminología profesional de business intelligence y análisis de datos.
+            
             """,
             config=types.GenerateContentConfig(
             temperature=0.2,
