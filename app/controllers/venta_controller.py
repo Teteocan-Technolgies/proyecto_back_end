@@ -6,7 +6,7 @@ from sqlalchemy import func
 # Retornar una lista de las ventas
 def get_all_ventas():
     try:
-        ventas = Ventas.query.all()
+        ventas = Ventas.query.order_by(Ventas.fecha.desc()).all()
         ventas_data = [{
             "venta_id": v.venta_id,
             "usuario_id": v.usuario_id,
