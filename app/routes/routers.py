@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from ..controllers import usuario_controller, producto_controller, venta_controller, chat_bot_controller
+from ..controllers import usuario_controller, producto_controller, venta_controller, chat_bot_controller, venta_detalle_controller
 
 api = Blueprint('api', __name__)
 
@@ -96,3 +96,30 @@ def procesar_consulta_chatbot():
     data = request.get_json()
     respuesta = chat_bot_controller.chat_bot(data)
     return jsonify(respuesta), 200
+
+@api.route('/detalle_venta', methods=['GET'])
+def get_all_detalle_ventas():
+    detalle_ventas, status_code = venta_detalle_controller.get_all_detalle_ventas()
+    return jsonify(detalle_ventas), status_code
+
+@api.route('/detalle_venta/<int:venta_detalle_id>', methods=['GET'])
+def get_detalle_venta_by_id(venta_detalle_id):
+    detalle_venta, status_code = venta_detalle_controller.get_detalle_venta_by_id(venta_detalle_id)
+    return jsonify(detalle_venta), status_code
+
+@api.route('/detalle_venta', methods=['POST'])
+def create_detalle_venta():
+    data = request.get_json()
+    detalle_venta, status_code = venta_detalle_controller.create_detalle_venta(data)
+    return jsonify(detalle_venta), status_code
+
+@api.route('/detalle_venta/<int:venta_detalle_id>', methods=['PUT'])
+def update_detalle_venta(venta_detalle_id):
+    data = request.get_json()
+    detalle_venta, status_code = venta_detalle_controller.update_detalle_venta(venta_detalle_id, data)
+    return jsonify(detalle_venta), status_code
+
+@api.route('/detalle_venta/<int:venta_detalle_id>', methods=['DELETE'])
+def delete_detalle_venta(venta_detalle_id):
+    detalle_venta, status_code = venta_detalle_controller.delete_detalle_venta(venta_detalle_id)
+    return jsonify(detalle_venta), status_code
