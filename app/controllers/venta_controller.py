@@ -92,6 +92,22 @@ def create_venta(venta_data):
             fecha = venta_data["fecha"],
         )
         db.session.add(venta)
+        db.session.flush() # Para obtener el ID de la venta antes del commit
+
+        if not venta['productos']:
+            return {"error": "La venta no tiene productos registrados"}, 404
+        
+        
+        for producto in venta['productos']:
+            producto = DetalleVenta(
+                venta_id = venta.venta_id,
+                producto_id = producto["producto_id"],
+                cantidad = producto["cantidad"],
+                precio = producto['precio'],
+                total = producto['total']
+            )
+            db.session.add(producto)
+
         db.session.commit()
         return {
             "message": "Venta creada con éxito",
@@ -157,7 +173,7 @@ def delete_venta(venta_id):
 def get_estadisticas_ventas():
     print('Estadísticas de ventas por mes')
     try:
-        current_year = datetime.now().year
+        current_year = current_year = datetime(year=2024, month=1, day=1).year
         result = []
         
         for month in range(1, 13):
