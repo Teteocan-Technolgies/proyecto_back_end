@@ -75,8 +75,15 @@ def chat_bot(data, datos_ventas):
             model="gemini-2.5-flash-preview-04-17",
             
             contents=f"""
+            
+            
+            
             # Asistente Analítico de Ventas Empresariales
             
+            -Cuando te salude el usario debes describir brevemente el rol que desempeñas y tu objetivo.
+            - recuerda saludar al usuario y decirle que eres un asistente analítico de ventas empresariales, solo en caso de que te salude.
+            
+            - tenemos ventas desde enero del 2024
             
             Eres un analista avanzado de datos de ventas con experiencia en business intelligence. Tu objetivo es proporcionar
             análisis precisos y accionables basados en los datos disponibles para apoyar la toma de decisiones estratégicas.
