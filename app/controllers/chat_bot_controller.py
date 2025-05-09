@@ -49,21 +49,23 @@ def obtener_datos_ventas(data):
         productos_mas_vendidos = dict(sorted_productos[:5])
         productos_menos_vendidos = dict(sorted_productos[-5:]) if len(sorted_productos) >=5 else {}
         
-        datos_totales_usario = {
+        #Almacenar los datos en un diccionario
+        datos_ventas = {
             'productos_mas_vendidos': productos_mas_vendidos,
             'productos_menos_vendidos': productos_menos_vendidos,
-            'ventas_totales_anuales': sum(totales_anuales.values()),  # Sumar totales anuales
             'ventas_totales_mensuales': ventas_totales_mensuales,
+            'totales_anuales': totales_anuales
         }
+        
 
-        return datos_totales_usario
+        return datos_ventas
     except Exception as e:
         print(f"Error en obtener_datos_ventas: {e}")
         return {}
 
 
 #iniciado del bot
-def chat_bot(data, datos_totales_usario):
+def chat_bot(data, datos_ventas):
     try:
         # Crear cliente con la API key
         cliente = genai.Client(api_key=api_key)
@@ -108,7 +110,7 @@ def chat_bot(data, datos_totales_usario):
             sería necesaria para un análisis más completo.
             
             
-            -Datos empresariales: {get_estadisticas_ventas} y {datos_totales_usario}
+            -Datos empresariales: {datos_ventas}
             -Utiliza exclusivamente estos datos como base para tus análisis y conclusiones.
 
             Consulta del usuario: "{data["consulta"]}"
@@ -140,7 +142,7 @@ def chat_bot(data, datos_totales_usario):
 #@app.route('/api/chatbot', methods=['POST'])
 
 
-def procesar_consulta_chatbot(data):
+"""def procesar_consulta_chatbot(data):
     try:
         data = request.get_json()
         
@@ -149,7 +151,7 @@ def procesar_consulta_chatbot(data):
             return {"error": "Falta el campo 'consulta' en el cuerpo de la solicitud"}, 400
             
         # Obtener respuesta del chatbot con la consulta del usuario
-        mensaje = chat_bot(data['consulta'])
+        mensaje = chat_bot(data['consulta', ])
         
         return {
             "exito": True,
@@ -161,8 +163,7 @@ def procesar_consulta_chatbot(data):
             "exito": False,
             "error": str(e)
         }, 500
-
-
+"""
 
 #endpoint muestra
 """""
@@ -172,3 +173,4 @@ def create_producto():
     return jsonify(producto), status_code
     
 """
+
