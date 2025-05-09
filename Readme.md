@@ -52,7 +52,7 @@ DB_DRIVER=mysql
 1️⃣ INTRODUCCIÓN
 ---------------
 🧩 Nombre del proyecto: Dashboard de Ventas con Autenticación y Chatbot  
-🛠️ Tecnologías utilizadas: Vue.js (frontend), Flask (backend), SQLite/PostgreSQL, Bootstrap/Tailwind, API de Chatbot  
+🛠️ Tecnologías utilizadas: Vue.js (frontend), Flask (backend), MySQL, API de Chatbot  
 🎯 Propósito: Proporcionar una interfaz web para visualizar métricas de ventas, gestionar accesos mediante autenticación y consultar un chatbot para soporte o reportes rápidos.
 
 2️⃣ ESTRUCTURA DEL PROYECTO
