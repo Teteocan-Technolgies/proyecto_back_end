@@ -122,10 +122,10 @@ def chat_bot(data):
 
         
         mensaje = respuesta [0].text       
-        return mensaje
+        return {'success':True, 'data': mensaje}
     except Exception as e:
         print(f"Error al generar mensaje: {e}")
-        return "No se pudo generar."
+        return {'success': False, 'data': "No se pudo generar."}
 
 
 #print(chat_bot())
